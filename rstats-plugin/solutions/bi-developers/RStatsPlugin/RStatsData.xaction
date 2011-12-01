@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Forum signup histogram</title>
+  <version>1</version>
+  <logging-level>DEBUG</logging-level>
+  <documentation> 
+    <author>Doug Moran</author>  
+    <description>An Action Sequence to test the JasperAction sample Pentaho action from a plugin</description>  
+    <help>%help</help>  
+    <result-type>rule</result-type>  
+    <icon>HelloWorld.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <outputType type="string"> 
+      <default-value>image/jpeg</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </outputType>  
+    <TIME_UNIT type="string"> 
+      <sources> 
+        <request>TIME_UNIT</request> 
+      </sources>  
+      <default-value><![CDATA[DAY]]></default-value> 
+    </TIME_UNIT> 
+  </inputs>
+
+  <outputs> 
+    <response type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </response> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <rEvalExpression type="solution"> 
+      <solution-file> 
+        <location>TEST1.rrr</location>  
+        <mime-type>text/plain</mime-type> 
+      </solution-file> 
+    </rEvalExpression> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>Relational</action-type>
+      <action-inputs/>
+      <action-outputs> 
+        <query-result type="result-set" mapping="query_result"/> 
+      </action-outputs>
+      <component-definition> 
+        <query><![CDATA[select prodid, os, PingDays, TotalDays
+from MonthlyGUIDSummary]]></query>  
+        <live><![CDATA[true]]></live>  
+        <driver><![CDATA[com.mysql.jdbc.Driver]]></driver>  
+        <connection><![CDATA[jdbc:mysql://192.168.1.100:3306/CommunityMetrics]]></connection>  
+        <user-id><![CDATA[devuser]]></user-id>  
+        <password><![CDATA[pentaho06]]></password> 
+      </component-definition> 
+    </action-definition>
+  
+    <!--
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>Relational</action-type>
+      <action-inputs/>
+      <action-outputs> 
+        <query-result type="result-set" mapping="query_result"/> 
+      </action-outputs>
+      <component-definition> 
+        <query><![CDATA[select DATE_FORMAT(FROM_UNIXTIME(joindate), '%Y-%m')  as YearMonth, 
+       FROM_UNIXTIME(joindate) as First, FROM_UNIXTIME(lastactivity) as Last, 
+       TIMESTAMPDIFF( DAY, FROM_UNIXTIME(joindate), FROM_UNIXTIME(lastactivity) ) as Duration
+from user
+where ( DATE(FROM_UNIXTIME(joindate)) >= 20060101 ) AND
+      joindate <= lastactivity]]></query>  
+        <live><![CDATA[true]]></live>  
+        <driver><![CDATA[com.mysql.jdbc.Driver]]></driver>  
+        <connection><![CDATA[jdbc:mysql://74.205.95.170:3306/vbulletin]]></connection>  
+        <user-id><![CDATA[vbulletin]]></user-id>  
+        <password><![CDATA[!P3ntah0webdev]]></password> 
+      </component-definition> 
+    </action-definition>
+ -->  
+    <action-definition> 
+      <component-name>TemplateComponent</component-name>
+      <action-type>Message Template</action-type>
+      <action-outputs> 
+        <output-message type="string" mapping="rEvalExpression"/> 
+      </action-outputs>
+      <component-definition> 
+        <template><![CDATA[hist(myData[myData$PingDays])]]></template> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>RStatsAction</component-name>
+      <action-type>My Action</action-type>
+      <action-inputs> 
+        <mimeType type="string" mapping="outputType"/>  
+        <myData type="result-set" mapping="query_result"/>  
+        <rEvalExpression type="string"/> 
+      </action-inputs>
+      <action-resources/>
+      <action-outputs> 
+        <response type="content"/> 
+      </action-outputs>
+      <component-definition/>  
+      <action-name>Test the sample component</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

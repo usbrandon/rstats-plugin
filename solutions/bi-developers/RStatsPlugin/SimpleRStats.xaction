@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Simple RStats data types</title>
+  <version>1</version>
+  <logging-level>DEBUG</logging-level>
+  <documentation> 
+    <author>Doug Moran</author>  
+    <description>An Action Sequence to test the JasperAction sample Pentaho action from a plugin</description>  
+    <help>%help</help>  
+    <result-type>rule</result-type>  
+    <icon>HelloWorld.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <outputType type="string"> 
+      <default-value><![CDATA[text/plain]]></default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </outputType>  
+    <x type="string"> 
+      <sources> 
+        <request>x</request> 
+      </sources>  
+      <default-value><![CDATA[1000]]></default-value> 
+    </x> 
+  </inputs>
+
+  <outputs> 
+    <z type="object"/>  
+    <j type="string"/>
+    <jarr type="string"/>
+    <outputType type="string"/>
+    <errorMessage type="string"/>
+    <a type="bigdecimal"/>
+    <outStr type="string"/>
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report --> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>
+      <action-type>JavaScript</action-type>
+      <action-outputs> 
+        <x type="long"/>  
+        <i type="bigdecimal"/>  
+        <a type="bigdecimal"/> 
+      </action-outputs>
+      <component-definition> 
+        <script><![CDATA[var x = 10;
+var i = 3.1;
+var a = 6.0;]]></script> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>TemplateComponent</component-name>
+      <action-type>Message Template</action-type>
+      <action-outputs> 
+        <output-message type="string" mapping="rEvalExpression"/> 
+      </action-outputs>
+      <component-definition> 
+        <template><![CDATA[# sPTHO DEBUG
+z <- a*i;
+j <- 1+2+3;
+jArr <- 1:50;
+
+m <- matrix( data=c(101:112),nrow=3,ncol=4);]]></template> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>RStatsAction</component-name>
+      <action-type>My Action</action-type>
+      <action-inputs> 
+        <mimeType type="string" mapping="outputType"/>  
+        <x type="bigdecimal"/>  
+        <a type="bigdecimal"/>  
+        <i type="integer"/>  
+        <rEvalExpression type="string"/> 
+      </action-inputs>
+      <action-resources/>
+      <action-outputs> 
+        <z type="object"/>  
+        <j type="string"/>
+        <jarr type="string"/>
+        <errorMessage type="string"/>
+      </action-outputs>
+      <component-definition> 
+        <aY>X*2</aY>  
+        <aZ>aY+1</aZ> 
+      </component-definition>  
+      <action-name>Test the sample component</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition>
+  
+    <action-definition>
+      <component-name>JavascriptRule</component-name>
+      <action-type>JavaScript</action-type>
+      <action-inputs>
+        <jarr type="string"/>
+      </action-inputs>
+      <action-outputs>
+        <outStr type="string"/>
+      </action-outputs>
+      <component-definition>
+        <script><![CDATA[var outStr = "";
+
+for ( i = 0; i < jarr.length; ++i ) {
+  outStr += jarr[i] + " ";
+}]]></script>
+      </component-definition>
+    </action-definition>
+
+  </actions> 
+</action-sequence>

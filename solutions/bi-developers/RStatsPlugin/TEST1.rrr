@@ -1,0 +1,8 @@
+##PTHO DEBUG
+#matrix(data=1:12, nrow=4, ncol=3, dimnames=list(c("r1", "r2", "r3", "r4"),c("c1","c2","c3")))
+
+library(Cairo);CairoJPEG('test.jpg',quality=90);
+hist( myData$GUIDS );
+dev.off();r=readBin('test.jpg','raw',1024*1024); 
+unlink('test.jpg'); r;
+

@@ -1,0 +1,56 @@
+<project name="R Stats Plugin" basedir="." default="default" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <!-- Import the subfloor-pkg.xml file which contains all the default tasks -->
+  <import file="build-res/subfloor-pkg.xml" />
+  
+  <target name="install">
+    <unzip src="${dist.dir}/${package.basename}.zip" dest="${pentaho.solutions.dir}/system" overwrite="true">
+    </unzip>
+    
+    <copy todir="${pentaho.solutions.dir}">
+      <fileset dir="${basedir}/solutions/"/>
+    </copy>
+  </target>
+
+  <!-- 
+  subfloor overrides 
+  -->
+  <path id="classpath">
+    <fileset dir="${devlib.dir}">
+      <include name="*.jar" />
+    </fileset>
+    <fileset dir="${lib.dir}">
+      <include name="*.jar" />
+    </fileset>
+    <fileset dir="${testlib.dir}">
+      <include name="*.jar" />
+    </fileset>
+    <fileset dir="${pentaho.lib.dir}">
+      <include name="pentaho-bi-platform-*.jar" />
+    </fileset>
+	<dirset dir="${pentaho.classes.dir}" />
+  </path>
+  
+  <!-- Copy all jars over to the plugin zip, 
+  except for pentaho platform jars which the platform provides -->
+  <target name="assemble.copy-libs">
+    <copy todir="${approot.stage.dir}/lib">
+      <fileset dir="${lib.dir}" excludes="pentaho-bi-platform-*.jar" />
+      <fileset file="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" />
+    </copy>
+  </target>
+  
+  
+  <!-- 
+  The following overrides are in place to suppress IVY dependency management.  If you
+  want to turn IVY off, you can uncomment these overrides. 
+  -->
+
+  <!-- Set default target to skip the ivy "resolve" step -->
+  <!--target name="default" depends="clean-all,dist,package" /-->
+  
+  <!-- Set the clean-all target to skip the "clean-jars" step.  We do not want our build
+  process to delete the "lib" dir -->
+  <!--target name="clean-all" depends="clean"/-->
+
+</project>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  This plugin specification file illustrates various extension points a plugin can extend, by providing:
+        1. An R web service
+        2. Content type registration of, and related content generation for, a new "R" solution file type 
+        3. A BI Platform Action, an executable bean that can be invoked by an action sequence
+        
+      A plugin file could contain just one of these sections and be complete.  For purposes of illustration only, we 
+      are showing all in a single plugin, how you might configure each type of extension.  In other words, your plugin
+      may only need to provide a Web Service, in which case you would only need the xml in section 1.  Conversely, your
+      plugin may only need to specify a new content type and content generator, so your plugin.xml would only need to 
+      contain the stuff in section 2, etc. 
+-->
+
+<plugin title="R Stats Sample">
+  
+  <!-- 
+  1. R Web Service 
+  Here we are exposing the R java bean as a webservice 
+  <webservice 
+    id="rStatsService"
+    type="xml"
+    title="R Stats Service" 
+    description="A sample webservice that rstats an input"
+    class="org.pentaho.rstats.platform.RStatsService"/>
+  -->
+  
+  <!-- 
+  2. Jasper Content Type and Content Generation
+     Here we are configuring the system to recognize our new .jrxml file type and make it runnable in PUC.
+     We are telling the platform to run our content generator, JasperContentGenerator, when an xjasper file is "invoked" in PUC.  
+  -->
+  <content-type type="rrr" mime-type="text/plain">
+    <title>R Stats</title>
+    <description>R Stats Definition</description>
+    <icon-url>content/rstats-res/echo.jpg</icon-url>
+    <meta-provider>org.pentaho.rstats.platform.RStatsContentTypeMetaProvider</meta-provider>
+    <operations>
+      <operation>
+        <id>RUN</id>
+        <command>content/rstats?solution={solution}&amp;path={path}&amp;action={name}</command>
+      </operation>
+    </operations>
+  </content-type>
+  
+  <content-generator
+    id="rstats"
+    title="RStats"
+    type="rrr"
+    class="org.pentaho.rstats.platform.RStatsContentGenerator"/>
+    
+    <!-- here, we are making the platform aware of a static resource that our plugin provides.  The jasper-res path
+         is referenced above in the content-type definition.  Specifically, the icon is being served statically via
+         this path -->
+    <static-paths>
+      <static-path url="/rstats-res" localFolder="resources"/>
+    </static-paths>  
+    
+    <!-- 
+    3.  Here we make the RStats available to be run in an action sequence
+    -->
+    <bean id="RStatsAction" class="org.pentaho.rstats.platform.RStatsAction"/>
+  
+</plugin>
